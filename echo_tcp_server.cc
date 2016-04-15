@@ -7,7 +7,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-#include "config_parser.h"
+#include "config_parser.cc"
 #include <cstdlib>
 #include <iostream>
 #include <boost/bind.hpp>
@@ -30,12 +30,12 @@ void session(socket_ptr sock)
       char data[max_length];
 
       boost::system::error_code error;
-      size_t length = sock->read_some(boost::asio::buffer(data), error);
+      size_t length = sock->read_some(boost::asio::buffer(data));
       if (error == boost::asio::error::eof)
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
-
+		
       boost::asio::write(*sock, boost::asio::buffer(data, length));
     }
 
@@ -55,9 +55,7 @@ void server(boost::asio::io_service& io_service, short port)
     boost::asio::basic_streambuf buffer;
     boost::asio::read_until(buffer, request, "\n");
     */
-    socket_ptr sock(new tcp::socket(io_service));
-    a.accept(*sock);
-    boost::thread t(boost::bind(session, sock));
+
   }
 }
 

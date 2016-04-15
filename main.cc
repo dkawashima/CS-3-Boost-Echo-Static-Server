@@ -1,4 +1,9 @@
-#include "echo_tcp_server.cc"
+#include "config_parser.cc"
+#include <cstdlib>
+#include <iostream>
+#include <boost/asio.hpp>
+
+using boost::asio::ip::tcp;
 /* copied from yichi example lines 3-14 */
 static int getPort(const NginxConfig &config) {
   for (const auto& statement : config.statements_) {
@@ -15,6 +20,7 @@ static int getPort(const NginxConfig &config) {
 
 int main(int argc, char* argv[])
 {
+	using namespace std; // For atoi.
   try
   {
     if (argc != 2)
@@ -30,8 +36,15 @@ int main(int argc, char* argv[])
     }
     boost::asio::io_service io_service;
     int port_ = getPort(config);
-    using namespace std; // For atoi.
-    //server(io_service, port_);
+   	
+    boost::asio::io_service io;
+    tcp::acceptor acceptor(io, tcp::endpoint(tcp::v4(), port_));
+    while (true){
+        tcp::socket socket(io);
+        acceptor.accept(socket);
+        std::string reply = "HTTP/1.0 200 <html> Content-Type: text/html\n <body>\nHello, world!\n</body>\n</html>";
+        boost::asio::write(socket, boost::asio::buffer(reply));
+	}
   }
   catch (std::exception& e)
   {
