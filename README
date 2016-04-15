@@ -3,3 +3,9 @@ Parser for nginx config files.
 Includes code from googletest-1.7.0. See https://code.google.com/p/googletest/
 
 Inspired by https://github.com/fatiherikli/nginxparser
+
+Server files:
+
+Build Script: build_server.sh
+
+Server: main.cc
