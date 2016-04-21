@@ -1,6 +1,6 @@
 language: cpp
 script: ./build_server.sh
 addons:
-	apt:
-		packages:
-		- libboost-all-dev
+  apt:
+    packages:
+    - libboost-all-dev
