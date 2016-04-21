@@ -5,7 +5,7 @@
 
 using boost::asio::ip::tcp;
 /* copied from yichi example lines 3-14 */
-static int getPort(const NginxConfig &config) {
+static int getPort(const NginxConfig &config) { // Gets port from config_file
   for (const auto& statement : config.statements_) {
     bool kl = true;
     for (const std::string& token : statement->tokens_) {
@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
   {
     if (argc != 2)
     {
-      std::cerr << "Usage: webserver <config_file>\n";
+      std::cerr << "Usage: webserver <config_file>\n";      
       return 1;
     }
     /* copied from yichi server.main lines 17 to 21 */
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
    	std::cout << port_ << "\n";
     boost::asio::io_service io;
     tcp::acceptor acceptor(io, tcp::endpoint(tcp::v4(), port_));
-	std::string reply = "HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n <html><body>Hello, world!</body></html>\r\n";
+	  //std::string reply = "HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n <html><body>Hello, world!</body></html>\r\n";
     while (true){
 		boost::system::error_code read_error;
         tcp::socket socket(io);
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 		std::string request;
 		std::getline(str, request);
 		if (request.find("GET") == 0){
-			boost::asio::write(socket, boost::asio::buffer(reply));
+			boost::asio::write(socket, boost::asio::buffer(request));
 		}
 		std::cout << "Got here!, Port: " << port_;
 		
