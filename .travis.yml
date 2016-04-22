@@ -1,5 +1,5 @@
 language: cpp
-script: ./build_server.sh
+script: make
 addons:
   apt:
     packages:
