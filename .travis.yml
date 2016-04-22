@@ -2,7 +2,5 @@ language: cpp
 script: make
 addons:
   apt:
-    packages:
-    - libboost-all-dev
     sources:
     - boost-latest
