@@ -4,8 +4,17 @@ Includes code from googletest-1.7.0. See https://code.google.com/p/googletest/
 
 Inspired by https://github.com/fatiherikli/nginxparser
 
-Server files:
+'Hello, World!' Server files:
 
 Build Script: build_server.sh
 
 Server: main.cc
+
+Echo Server files:
+
+Build Script: make
+
+Server: echo_tcp_server.cc
+
+Tests: config_parser_test.cc
+
