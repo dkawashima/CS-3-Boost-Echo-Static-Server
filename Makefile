@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -ansi -pedantic -ggdb -std=c++0x
 
-all: config_parser webserver
+all: config_parser webserver test
 # echoserver
 	
 webserver:
@@ -10,8 +10,7 @@ webserver:
 config_parser: 
 	$(CC) $(CFLAGS) -o config_parser config_parser.cc config_parser_main.cc
 
-# echoserver:
-#$(CC) $(CFLAGS) -o echoserver echo_tcp_server.cc -lboost_system
-
+test:
+	$(CC) $(CFLAGS) -o server_tests server_test.cc -lboost_system -lpthread
 clean: 
-	rm -f webserver config_parser
+	rm -f webserver config_parser server_tests
