@@ -36,7 +36,7 @@ TEST(NginxServerTest, GetPort) {
   }
 
   // Makes sure getPort function is working correctly
-  EXPECT_TRUE(success) << "example_config file did not parse successfully";
+  EXPECT_TRUE(success) << "getPort function is not working correctly";
 }
 
 TEST()

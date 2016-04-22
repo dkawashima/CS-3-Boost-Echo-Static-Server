@@ -30,14 +30,12 @@ void session(socket_ptr sock)
     for (;;)
     {
       char data[max_length];
-      std::cout << "session 1" <<"\n";
       boost::system::error_code error;
       size_t length = sock->read_some(boost::asio::buffer(data), error);
       if (error == boost::asio::error::eof)
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
-      std::cout << "session 2" << "\n";
 		  
       boost::asio::write(*sock, boost::asio::buffer(data, length));
       break;
@@ -52,20 +50,15 @@ void session(socket_ptr sock)
 
 void server(boost::asio::io_service& io_service, short port)
 {
-  std::cout << "End of line" << "\n";
   tcp::acceptor a(io_service, tcp::endpoint(tcp::v4(), port));
-  std::cout << "End of line" << "\n";
   for (;;)
   {
     /*
     boost::asio::basic_streambuf buffer;
     boost::asio::read_until(buffer, request, "\n");
     */
-    std::cout << "End of line" << "\n";
     socket_ptr sock(new tcp::socket(io_service));
-    std::cout << "End of line" << "\n";
     a.accept(*sock);
-    std::cout << "End of line" << "\n";
     
     std::thread t(session, std::move(sock));
     t.detach();
@@ -73,7 +66,6 @@ void server(boost::asio::io_service& io_service, short port)
     //session(std::move(sock));
     //std::thread t(boost::bind(session, sock));
     //boost::bind(session, sock);
-    std::cout << "End of line" << "\n";
   }
 }
 
@@ -111,8 +103,6 @@ int main(int argc, char* argv[])
     std::cout << port_ << "\n";
     boost::asio::io_service io;
     server(io, port_);
-    std::cout << "Got here!, Port: " << port_;
-
   }
   catch (std::exception& e)
   {
