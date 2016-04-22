@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -ansi -pedantic -ggdb -std=c++0x
 
-all: webserver 
+all: config_parser webserver
 # echoserver
 	
 webserver:
