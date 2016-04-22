@@ -14,4 +14,4 @@ config_parser:
 #$(CC) $(CFLAGS) -o echoserver echo_tcp_server.cc -lboost_system
 
 clean: 
-	rm -f webserver
+	rm -f webserver config_parser
