@@ -66,6 +66,7 @@ void server(boost::asio::io_service& io_service, short port)
     std::cout << "End of line" << "\n";
     a.accept(sock);
     std::cout << "End of line" << "\n";
+    
     std::thread t(session, std::move(sock));
     t.detach();
     //socket_ptr sock1 = std::move(sock);
