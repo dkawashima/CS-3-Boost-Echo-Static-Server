@@ -48,7 +48,7 @@ TEST(NginxServerTest, GetPort) {
   // Makes sure getPort function is working correctly
   EXPECT_TRUE(success) << "getPort function is not working correctly";
 }
-/*TEST(NginxConfigParserTest, MediaWikiConfig) {
+TEST(NginxConfigParserTest, MediaWikiConfig) {
   NginxConfigParser parser;
   NginxConfig out_config;
 
@@ -93,4 +93,3 @@ TEST(NginxConfigParserTest, ParserConfig) {
 
   EXPECT_TRUE(success) << "config_parser file did not parse successfully";
 }
-*/
