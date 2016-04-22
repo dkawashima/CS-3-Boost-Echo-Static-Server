@@ -13,7 +13,7 @@
 #include <boost/bind.hpp>
 #include <boost/smart_ptr.hpp>
 #include <boost/asio.hpp>
-#include <boost/thread/thread.hpp>
+#include <boost/thread.hpp>
 #include <thread>
 #include <utility>
 
@@ -21,9 +21,9 @@ using boost::asio::ip::tcp;
 
 const int max_length = 1024;
 
-//typedef boost::shared_ptr<tcp::socket> socket_ptr;
+typedef boost::shared_ptr<tcp::socket> socket_ptr;
 
-void session(tcp::socket sock)
+void session(socket_ptr sock)
 {
   try
   {
@@ -32,14 +32,14 @@ void session(tcp::socket sock)
       char data[max_length];
       std::cout << "session 1" <<"\n";
       boost::system::error_code error;
-      size_t length = sock.read_some(boost::asio::buffer(data), error);
+      size_t length = sock->read_some(boost::asio::buffer(data), error);
       if (error == boost::asio::error::eof)
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
       std::cout << "session 2" << "\n";
 		  
-      boost::asio::write(sock, boost::asio::buffer(data, length));
+      boost::asio::write(*sock, boost::asio::buffer(data, length));
       break;
     }
 
@@ -62,15 +62,17 @@ void server(boost::asio::io_service& io_service, short port)
     boost::asio::read_until(buffer, request, "\n");
     */
     std::cout << "End of line" << "\n";
-    tcp::socket sock(io_service);
+    socket_ptr sock(new tcp::socket(io_service));
     std::cout << "End of line" << "\n";
-    a.accept(sock);
+    a.accept(*sock);
     std::cout << "End of line" << "\n";
     
     std::thread t(session, std::move(sock));
     t.detach();
     //socket_ptr sock1 = std::move(sock);
     //session(std::move(sock));
+    //std::thread t(boost::bind(session, sock));
+    //boost::bind(session, sock);
     std::cout << "End of line" << "\n";
   }
 }
@@ -105,7 +107,6 @@ int main(int argc, char* argv[])
     if (!config_parser.Parse(argv[1], &config)) {
       return -1;
     }
-    boost::asio::io_service io_service;
     int port_ = getPort(config);
     std::cout << port_ << "\n";
     boost::asio::io_service io;
