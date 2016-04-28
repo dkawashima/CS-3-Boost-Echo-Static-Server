@@ -93,6 +93,9 @@ static int getPort(const NginxConfig &config) { // Gets port from config_file
   return -1;
 }
 
+}
+}
+
 int main(int argc, char* argv[])
 {
   using namespace std; 
@@ -109,10 +112,10 @@ int main(int argc, char* argv[])
     if (!config_parser.Parse(argv[1], &config)) {
       return -1;
     }
-    int port_ = getPort(config);
+    int port_ = http::server::getPort(config);
     std::cout << port_ << "\n";
     boost::asio::io_service io;
-    server(io, port_);
+    http::server::server(io, port_);
   }
   catch (std::exception& e)
   {
@@ -120,6 +123,4 @@ int main(int argc, char* argv[])
   }
 
   return 0;
-}
-}
 }
