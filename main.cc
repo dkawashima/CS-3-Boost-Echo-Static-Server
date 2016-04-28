@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
    	std::cout << port_ << "\n";
     boost::asio::io_service io;
     tcp::acceptor acceptor(io, tcp::endpoint(tcp::v4(), port_));
-	  //std::string reply = "HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n <html><body>Hello, world!</body></html>\r\n";
+	  std::string reply = "HTTP/1.1 200 OK\r\n Content-Type: text/html\r\n\r\n <html><body>Hello, world!</body></html>\r\n";
     while (true){
 		boost::system::error_code read_error;
         tcp::socket socket(io);
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 		std::string request;
 		std::getline(str, request);
 		if (request.find("GET") == 0){
-			boost::asio::write(socket, boost::asio::buffer(request));
+			boost::asio::write(socket, boost::asio::buffer(reply));
 		}
 		std::cout << "Got here!, Port: " << port_;
 		

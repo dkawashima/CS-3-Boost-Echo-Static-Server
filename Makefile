@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -ansi -pedantic -ggdb -std=c++0x
+CFLAGS = -Wall -ansi -ggdb -std=c++0x
 GTEST_DIR = gtest-1.7.0
 all: config_parser webserver test
 # echoserver
@@ -12,6 +12,9 @@ config_parser:
 
 test:
 	./build_tests.sh
+
+hello:
+	./build_server.sh
 
 clean: 
 	rm -f webserver config_parser server_tests
