@@ -8,7 +8,7 @@
 #include <thread>
 #include <utility>
 #include <string>
-
+#include "request_parser.h"
 
 namespace http {
 namespace server {
