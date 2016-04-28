@@ -1,3 +1,5 @@
+#include "handlers.h"
+
 namespace http {
 namespace server {
 

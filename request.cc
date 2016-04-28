@@ -7,15 +7,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-#include "config_parser.cc"
-#include <cstdlib>
-#include <iostream>
-#include <boost/bind.hpp>
-#include <boost/smart_ptr.hpp>
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
-#include <thread>
-#include <utility>
+
+#include "handlers.h"
 
 using boost::asio::ip::tcp;
 
@@ -23,21 +16,38 @@ const int max_length = 1024;
 
 typedef boost::shared_ptr<tcp::socket> socket_ptr;
 
+namespace http {
+namespace server {
+
 void session(socket_ptr sock)
 {
   try
   {
     for (;;)
     {
-      char data[max_length];
+      //char data[max_length];
+      boost::array <char,8192> buffer_;
       boost::system::error_code error;
-      size_t length = sock->read_some(boost::asio::buffer(data), error);
+      //std::size_t bytes_t;
+      std::size_t length = sock->read_some(boost::asio::buffer(buffer_), error);
+      // TODO: Pass data in to stuff;
+      //boost::array <char,8192> buffer_;
+      std::string doc_root = "/static";
+      request_handler reqHand(doc_root);
+      request req;
+      reply rep;
+      request_parser rparser = request_parser();
+      rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
+      reqHand.request_handler::handle_request(req, rep);
+
+
+
       if (error == boost::asio::error::eof)
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
 		  
-      boost::asio::write(*sock, boost::asio::buffer(data, length));
+      boost::asio::write(*sock, rep.to_buffers());
       break;
     }
 
@@ -110,4 +120,6 @@ int main(int argc, char* argv[])
   }
 
   return 0;
+}
+}
 }

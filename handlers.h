@@ -1,14 +1,18 @@
-#include "config_parser.cc"
+#include "config_parser.h"
 #include <cstdlib>
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/smart_ptr.hpp>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <boost/array.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/lexical_cast.hpp>
 #include <thread>
 #include <utility>
 #include <string>
 #include "request_parser.h"
+#include <fstream>
 
 namespace http {
 namespace server {
@@ -25,21 +29,8 @@ struct reply
   enum status_type
   {
     ok = 200,
-    created = 201,
-    accepted = 202,
-    no_content = 204,
-    multiple_choices = 300,
-    moved_permanently = 301,
-    moved_temporarily = 302,
-    not_modified = 304,
-    bad_request = 400,
-    unauthorized = 401,
-    forbidden = 403,
     not_found = 404,
-    internal_server_error = 500,
-    not_implemented = 501,
-    bad_gateway = 502,
-    service_unavailable = 503
+
   } status;
 
   /// The headers to be included in the reply.
