@@ -81,5 +81,10 @@ std::string extension_to_type(const std::string& extension);
 
 } // namespace mime_types
 
+/*void session(socket_ptr sock, std::string base_path);
+void server(boost::asio::io_service& io_service, short port, std::string base_path);
+static std::string getBasePath(const NginxConfig &config);
+static int getPort(const NginxConfig &config);
+*/
 } // namespace server
 } // namespace http

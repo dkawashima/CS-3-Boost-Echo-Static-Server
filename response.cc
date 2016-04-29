@@ -55,7 +55,6 @@ void request_handler::handle_request(const request& req, reply& rep, bool& isEch
   } else if (full_path.find("/static") != std::string::npos && full_path.find("/static1") == std::string::npos){
     int start_position_to_erase = full_path.find("/static");
     full_path.erase(start_position_to_erase, 7);
-    std::cout << "Full path: " << full_path << "\n";
   }
 std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 

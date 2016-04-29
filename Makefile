@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -ansi -ggdb -std=c++0x
 GTEST_DIR = gtest-1.7.0
-all: webserver
+all: webserver echoserver hello test
 # echoserver
 	
 echoserver:
@@ -19,5 +19,13 @@ webserver:
 hello:
 	./build_server.sh
 
+test: 
+	g++ -std=c++0x -isystem ${GTEST_DIR}/include -I${GTEST_DIR} -pthread -c ${GTEST_DIR}/src/gtest-all.cc
+	ar -rv libgtest.a gtest-all.o
+	g++ -std=c++0x -isystem ${GTEST_DIR}/include -pthread server_test.cc config_parser.cc mime_types.cc reply.cc response.cc ${GTEST_DIR}/src/gtest_main.cc libgtest.a -o server_tests -lboost_system -lpthread
+
+check: test
+	./server_tests
+
 clean: 
-	rm -f webserver config_parser server_tests echoserver
+	rm -f webserver config_parser server_tests echoserver hello 

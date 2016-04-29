@@ -6,15 +6,27 @@ Inspired by https://github.com/fatiherikli/nginxparser
 
 'Hello, World!' Server files:
 
-Build Script: build_server.sh
+Build Script: make hello
 
 Server: main.cc
 
 Echo Server files:
 
-Build Script: make
+Build Script: make echoserver
 
 Server: echo_tcp_server.cc
 
 Tests: config_parser_test.cc
+
+File/Echo Server files:
+
+Build Script: make
+
+Server: request.cc
+
+Tests: server_test.cc
+
+Run Test: make check
+
+
 

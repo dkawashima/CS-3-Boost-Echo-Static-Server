@@ -25,14 +25,12 @@ void session(socket_ptr sock, std::string base_path)
   {
     for (;;)
     {
-      //char data[max_length];
       boost::array <char,8192> buffer_;
       boost::system::error_code error;
-      //std::size_t bytes_t;
+
       std::cout << "Listening..." << "\n";
       std::size_t length = sock->read_some(boost::asio::buffer(buffer_), error);
-      // TODO: Pass data in to stuff;
-      //boost::array <char,8192> buffer_;
+
       std::cout << "Handling request..." << "\n";
       request_handler reqHand(base_path);
       request req;
@@ -101,7 +99,7 @@ static int getPort(const NginxConfig &config) { // Gets port from config_file
   return -1;
 }
 
-static std::string getBasePath(const NginxConfig &config) { // Gets port from config_file
+static std::string getBasePath(const NginxConfig &config) { // Gets base_path from config_file
   std::string pathfinder = "/";
   for (const auto& statement : config.statements_) {
     bool kl = false;
