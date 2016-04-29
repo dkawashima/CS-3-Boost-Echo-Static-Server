@@ -19,7 +19,7 @@ typedef boost::shared_ptr<tcp::socket> socket_ptr;
 namespace http {
 namespace server {
 
-void session(socket_ptr sock)
+void session(socket_ptr sock, std::string base_path)
 {
   try
   {
@@ -34,13 +34,13 @@ void session(socket_ptr sock)
       // TODO: Pass data in to stuff;
       //boost::array <char,8192> buffer_;
       std::cout << "Handling request..." << "\n";
-      std::string doc_root = "/home/user/2coolforschool";
-      request_handler reqHand(doc_root);
+      request_handler reqHand(base_path);
       request req;
       reply rep;
+      bool isEcho = false;
       request_parser rparser = request_parser();
       rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
-      reqHand.request_handler::handle_request(req, rep);
+      reqHand.request_handler::handle_request(req, rep, isEcho);
 
 
 
@@ -48,8 +48,14 @@ void session(socket_ptr sock)
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
-		  std::cout << "Returning reply..." << "\n";
-      boost::asio::write(*sock, rep.to_buffers());
+      if (isEcho == false){
+        std::cout << "Returning file reply..." << "\n";
+        boost::asio::write(*sock, rep.to_buffers());
+      } else {
+        std::cout << "Returning echo reply..." << "\n";
+        boost::asio::write(*sock, boost::asio::buffer(buffer_, length));
+      }
+      
       break;
     }
 
@@ -60,7 +66,7 @@ void session(socket_ptr sock)
   }
 }
 
-void server(boost::asio::io_service& io_service, short port)
+void server(boost::asio::io_service& io_service, short port, std::string base_path)
 {
   tcp::acceptor a(io_service, tcp::endpoint(tcp::v4(), port));
   for (;;)
@@ -72,7 +78,7 @@ void server(boost::asio::io_service& io_service, short port)
     socket_ptr sock(new tcp::socket(io_service));
     a.accept(*sock);
     
-    std::thread t(session, std::move(sock));
+    std::thread t(session, std::move(sock), base_path);
     t.detach();
     //socket_ptr sock1 = std::move(sock);
     //session(std::move(sock));
@@ -135,7 +141,7 @@ int main(int argc, char* argv[])
     std::cout << "Server running on port: " << port_ << "\n";
     std::cout << "Base Path for files: " << base_path << "\n";
     boost::asio::io_service io;
-    http::server::server(io, port_);
+    http::server::server(io, port_, base_path);
   }
   catch (std::exception& e)
   {
