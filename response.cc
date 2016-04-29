@@ -55,6 +55,7 @@ void request_handler::handle_request(const request& req, reply& rep)
   }
 
   // Fill out the reply to be sent to the client.
+  std::cout << "File at path: " << full_path.c_str() << " is valid!" << "\n";
   rep.status = reply::ok;
   char buf[512];
   while (is.read(buf, sizeof(buf)).gcount() > 0)

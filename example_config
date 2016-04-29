@@ -1,6 +1,6 @@
 listen 8080;
+base_path /home/user/2coolforschool;
 
 server {
   server_name foo.com;
-  root /home/ubuntu/sites/foo/;
 }
