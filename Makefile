@@ -28,4 +28,4 @@ check: test
 	./server_tests
 
 clean: 
-	rm -f webserver config_parser server_tests echoserver hello 
+	rm -f webserver config_parser server_tests echoserver helloserver 
