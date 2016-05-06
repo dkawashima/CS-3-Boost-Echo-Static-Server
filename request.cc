@@ -23,6 +23,11 @@ void session(socket_ptr sock, std::string base_path)
 {
   try
   {
+    request_handler reqHand(base_path);
+    request req;
+    reply rep;
+    bool isEcho = false;
+    request_parser rparser = request_parser();
     for (;;)
     {
       boost::array <char,8192> buffer_;
@@ -32,11 +37,7 @@ void session(socket_ptr sock, std::string base_path)
       std::size_t length = sock->read_some(boost::asio::buffer(buffer_), error);
 
       std::cout << "Handling request..." << "\n";
-      request_handler reqHand(base_path);
-      request req;
-      reply rep;
-      bool isEcho = false;
-      request_parser rparser = request_parser();
+ 
       rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
       reqHand.request_handler::handle_request(req, rep, isEcho);
 

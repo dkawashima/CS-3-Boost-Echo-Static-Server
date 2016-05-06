@@ -50,7 +50,7 @@ void request_handler::handle_request(const request& req, reply& rep, bool& isEch
   
   if (full_path.find("/echo") != std::string::npos){
     isEcho = true;
-    rep = reply::stock_reply(reply::not_found);
+    rep = reply::stock_reply(reply::not_found); // Not returned
     return;
   } else if (full_path.find("/static") != std::string::npos && full_path.find("/static1") == std::string::npos){
     int start_position_to_erase = full_path.find("/static");
