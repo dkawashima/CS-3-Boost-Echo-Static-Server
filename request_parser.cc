@@ -13,7 +13,7 @@ void request_parser::reset()
   state_ = method_start;
 }
 
-boost::tribool request_parser::consume(request& req, char input)
+boost::tribool request_parser::consume(HttpRequest& req, char input)
 {
   switch (state_)
   {
@@ -25,7 +25,7 @@ boost::tribool request_parser::consume(request& req, char input)
     else
     {
       state_ = method;
-      req.method.push_back(input);
+      req.method_.push_back(input);
       return boost::indeterminate;
     }
   case method:
@@ -40,7 +40,7 @@ boost::tribool request_parser::consume(request& req, char input)
     }
     else
     {
-      req.method.push_back(input);
+      req.method_.push_back(input);
       return boost::indeterminate;
     }
   case uri_start:
@@ -51,7 +51,7 @@ boost::tribool request_parser::consume(request& req, char input)
     else
     {
       state_ = uri;
-      req.uri.push_back(input);
+      req.uri_.push_back(input);
       return boost::indeterminate;
     }
   case uri:
@@ -66,7 +66,7 @@ boost::tribool request_parser::consume(request& req, char input)
     }
     else
     {
-      req.uri.push_back(input);
+      req.uri_.push_back(input);
       return boost::indeterminate;
     }
   case http_version_h:
@@ -189,7 +189,7 @@ boost::tribool request_parser::consume(request& req, char input)
       state_ = expecting_newline_3;
       return boost::indeterminate;
     }
-    else if (!req.headers.empty() && (input == ' ' || input == '\t'))
+    else if (!req.headers_.empty() && (input == ' ' || input == '\t'))
     {
       state_ = header_lws;
       return boost::indeterminate;
@@ -200,8 +200,9 @@ boost::tribool request_parser::consume(request& req, char input)
     }
     else
     {
-      req.headers.push_back(header());
-      req.headers.back().name.push_back(input);
+      std::pair <std::string. std::string> header;
+      req.headers_.push_back(header);
+      req.headers_.back().first.push_back(input);
       state_ = header_name;
       return boost::indeterminate;
     }
@@ -222,7 +223,7 @@ boost::tribool request_parser::consume(request& req, char input)
     else
     {
       state_ = header_value;
-      req.headers.back().value.push_back(input);
+      req.headers_.back().second.push_back(input);
       return boost::indeterminate;
     }
   case header_name:
@@ -237,7 +238,7 @@ boost::tribool request_parser::consume(request& req, char input)
     }
     else
     {
-      req.headers.back().name.push_back(input);
+      req.headers_.back().first.push_back(input);
       return boost::indeterminate;
     }
   case space_before_header_value:
@@ -262,7 +263,7 @@ boost::tribool request_parser::consume(request& req, char input)
     }
     else
     {
-      req.headers.back().value.push_back(input);
+      req.headers_.back().second.push_back(input);
       return boost::indeterminate;
     }
   case expecting_newline_2:
