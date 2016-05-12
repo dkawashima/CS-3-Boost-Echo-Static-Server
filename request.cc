@@ -94,26 +94,31 @@ static int getPort(const NginxConfig &config) { // Gets port from config_file
       if (!kl) {
         try { return stoi(token); } catch (...) {}
       }
-      kl = (token != "listen");
+      kl = (token != "port");
     }
   }
   return -1;
 }
-
-static std::string getBasePath(const NginxConfig &config) { // Gets base_path from config_file
-  std::string pathfinder = "/";
+/*
+static std::map getBasePath(const NginxConfig &config) { // Gets base_path from config_file
+  std::string pathfinder = "handler";
+  int count = 0;
+  bool kl = false;
   for (const auto& statement : config.statements_) {
-    bool kl = false;
     for (const std::string& token : statement->tokens_) {
       kl = (token.find(pathfinder) != std::string::npos);
       if (kl) {
+        count++;
+        if (count = 3) {
         try { return token; } catch (...) {}
+        }
       }
     }
   }
   std::string s = "No valid path!";
   return s;
 }
+*/
 
 }
 }

@@ -4,9 +4,9 @@ path /echo;
 }
 handler static {
 path /static;
-directory /foo;
+directory /home/user/2coolforschool;
 }
 handler static {
 path /more_static;
-directory /foo;
+directory /home/user/2coolforschool;
 }

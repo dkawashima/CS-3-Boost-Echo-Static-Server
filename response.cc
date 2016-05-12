@@ -7,23 +7,35 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-#include "handlers.h"
+#include "request_handlers.h"
 
 namespace http {
 namespace server {
 
-request_handler::request_handler(const std::string& doc_root)
-  : doc_root_(doc_root)
-{
-}
 
-void request_handler::handle_request(const request& req, reply& rep, bool& isEcho)
+//TODO
+virtual bool request_handler::init(const std::map<std::string, std::string>& config_map){
+    return 0;
+}
+  
+
+
+virtual bool request_handler::handle_request(const HttpRequest& req, HttpResponse* rep)
 {
   // Decode url to path.
   std::string request_path;
   if (!url_decode(req.uri, request_path))
   {
-    rep = reply::stock_reply(reply::not_found);
+    rep.status_code_ = "404";
+    rep.http_version_ = "1.0";
+    rep.reason_phrase_ = "Not Found";
+    rep.body_ = "HTTP/1.0 404 Not Found\r\n";
+    rep.headers[0].first = "Content-Length";
+    rep.headers[0].second = boost::lexical_cast<std::string>(rep.body_.size());; 
+    rep.headers[1].first = "Content-Type";
+    rep.headers[1].second = "text/html"; 
+    
+    //rep = reply::stock_reply(reply::not_found);
     return;
   }
 
@@ -31,7 +43,16 @@ void request_handler::handle_request(const request& req, reply& rep, bool& isEch
   if (request_path.empty() || request_path[0] != '/'
       || request_path.find("..") != std::string::npos)
   {
-    rep = reply::stock_reply(reply::not_found);
+    rep.status_code_ = "404";
+    rep.http_version_ = "1.0";
+    rep.reason_phrase_ = "Not Found";
+    rep.body_ = "HTTP/1.0 404 Not Found\r\n";
+    rep.headers[0].first = "Content-Length";
+    rep.headers[0].second = boost::lexical_cast<std::string>(rep.body_.size());; 
+    rep.headers[1].first = "Content-Type";
+    rep.headers[1].second = "text/html"; 
+
+    //rep = reply::stock_reply(reply::not_found);
     return;
   }
 
@@ -50,7 +71,7 @@ void request_handler::handle_request(const request& req, reply& rep, bool& isEch
   
   if (full_path.find("/echo") != std::string::npos){
     isEcho = true;
-    rep = reply::stock_reply(reply::not_found); // Not returned
+    //rep = reply::stock_reply(reply::not_found); // Not returned
     return;
   } else if (full_path.find("/static") != std::string::npos && full_path.find("/static1") == std::string::npos){
     int start_position_to_erase = full_path.find("/static");
@@ -60,22 +81,32 @@ std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 
   if (!is)
   {
-    rep = reply::stock_reply(reply::not_found);
+    rep.status_code_ = "404";
+    rep.http_version_ = "1.0";
+    rep.reason_phrase_ = "Not Found";
+    rep.body_ = "HTTP/1.0 404 Not Found\r\n";
+    rep.headers[0].first = "Content-Length";
+    rep.headers[0].second = boost::lexical_cast<std::string>(rep.body_.size());; 
+    rep.headers[1].first = "Content-Type";
+    rep.headers[1].second = "text/html"; 
+    //rep = reply::stock_reply(reply::not_found);
     return;
   }
 
 
   // Fill out the reply to be sent to the client.
   std::cout << "File at path: " << full_path.c_str() << " is valid!" << "\n";
-  rep.status = reply::ok;
+  rep.status_code = "200";
+  rep.http_version_ = "1.0";
+  rep.reason_phrase_ = "OK";
   char buf[512];
   while (is.read(buf, sizeof(buf)).gcount() > 0)
-  rep.content.append(buf, is.gcount());
+  rep.body_.append(buf, is.gcount());
   rep.headers.resize(2);
-  rep.headers[0].name = "Content-Length";
-  rep.headers[0].value = boost::lexical_cast<std::string>(rep.content.size());
-  rep.headers[1].name = "Content-Type";
-  rep.headers[1].value = mime_types::extension_to_type(extension);
+  rep.headers[0].first = "Content-Length";
+  rep.headers[0].second = boost::lexical_cast<std::string>(rep.body_.size());
+  rep.headers[1].first = "Content-Type";
+  rep.headers[1].second = mime_types::extension_to_type(extension);
 }
 
 bool request_handler::url_decode(const std::string& in, std::string& out)
