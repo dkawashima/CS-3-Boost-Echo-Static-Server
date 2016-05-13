@@ -1,32 +1,41 @@
-Parser for nginx config files.
+first compile and build the server using make webserver.
+Testing of our server can be ran and compiled in server_test.cc
+Our config file is called config, so when running the webserver
+run it as ./webserver config
+We then have defined three subclasses, not_found_handler found in
+Not_Found_Handler.cc, echoHandler found in echoHandler.cc, and
+StaticHandler found in StaticHandler.cc. These subclasses deal
+with the individual handlers, based on what is in the URI data,
+we will chose which handler to use.
 
-Includes code from googletest-1.7.0. See https://code.google.com/p/googletest/
+Our main function is ran in request.cc, and does the following
+it first parses the config and then calls the get_port method
+then it calls config_to_handlers which takes in a config_file
+and returns a vector of maps, that contain keys indicating
+"handler", "path", and also potentially "directory" with 
+appropriate values stored. The making of these maps is done
+in getChildBlock. Our main function then calls the server
+with the io, our port, and our vector of handlers (which are maps)
 
-Inspired by https://github.com/fatiherikli/nginxparser
+Our server function makes socckets, and then runs the session on a thread and the session takes the socket and the handlervector
 
-'Hello, World!' Server files:
+Our session function initializes an http request req, a uri_path, 
+echo and static handlers and response rep. We also initialize a 
+request_parsere rparser. Than we wait for data to process in a forloop
+Then it listens and parses that data into an httpRequest using our 
+rparser and calling its parse method that we initialized. We 
+then also store the raw_req that was just the input data into
+a request string.
 
-Build Script: make hello
-
-Server: main.cc
-
-Echo Server files:
-
-Build Script: make echoserver
-
-Server: echo_tcp_server.cc
-
-Tests: config_parser_test.cc
-
-File/Echo Server files:
-
-Build Script: make
-
-Server: request.cc
-
-Tests: server_test.cc
-
-Run Test: make check
-
-
+then we iterate through all of the handlers to see if
+the path is contained in our uri, and if it is we erase the 
+portion from the uri that is the path 
+ex:
+uri = /echo/FooBar
+newURI = /FooBar
+and then we remove the handler field from the map. Finally we either
+handle the request using the handler fieldSpecified to determine which
+handler subclass to use. After we have determinded which subclass to 
+use we pass the reply and request that we initialized. the reply
+is blank.
 
