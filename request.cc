@@ -8,7 +8,9 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "handlers.h"
+#include "request_handler.h"
+//#include "echo_handler.h"
+//#include "static_handler.h"
 
 using boost::asio::ip::tcp;
 
@@ -16,19 +18,37 @@ const int max_length = 1024;
 
 typedef boost::shared_ptr<tcp::socket> socket_ptr;
 
-namespace http {
-namespace server {
+/*static std::vector<boost::asio::const_buffer> to_buffers(HttpResponse reply)
+{
+  std::vector<boost::asio::const_buffer> buffers;
+  buffers.push_back(reply.reason_phrase_);
+  for (std::size_t i = 0; i < reply.headers_.size(); ++i)
+  {
+    header& h = reply.headers_[i];
+    buffers.push_back(boost::asio::buffer(h.first));
+    buffers.push_back(boost::asio::buffer(misc_strings::name_value_separator));
+    buffers.push_back(boost::asio::buffer(h.second));
+    buffers.push_back(boost::asio::buffer(misc_strings::crlf));
+  }
+  buffers.push_back(boost::asio::buffer(misc_strings::crlf));
+  buffers.push_back(boost::asio::buffer(reply.body_));
+  return buffers;
+}*/
+
+/*namespace http {
+namespace server { */
 
 void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> handlerVector)
 {
   try
   {
-    int i =0;
+    unsigned int i = 0;
     std::string uri_path;
-    HttpRequest req;
-    RequestHandler reqHand;
+    HttpRequest req = {};
+    EchoHandler echoHand;
+    StaticHandler staticHand;
     HttpResponse rep;
-    bool isEcho = false;
+    //bool isEcho = false;
     request_parser rparser = request_parser();
     for (;;)
     {
@@ -42,14 +62,27 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
       std::cout << "Handling request..." << "\n";
 
       rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
-      
-      for (i=0; i<handlerVector.size(); i++){
+      std::string raw_req(buffer_.begin(), buffer_.end());
+      req.raw_request_ = raw_req;
+      for (i = 0; i < handlerVector.size(); i++){
         if (req.uri_.find(handlerVector[i]["path"]) != std::string::npos) {
-        int start_position_to_erase = req.uri_.find("/static");
+        int start_position_to_erase = req.uri_.find(handlerVector[i]["path"]);
         req.uri_.erase(start_position_to_erase, handlerVector[i]["path"].size());
+          if (handlerVector[i]["handler"] == "echo"){
+            handlerVector[i].erase("handler");
+            echoHand.EchoHandler::Init(handlerVector[i]);
+            echoHand.EchoHandler::HandleRequest(req, &rep);
+            std::cout << "Returning echo reply..." << "\n";
+          } else { 
+            handlerVector[i].erase("handler");
+            staticHand.StaticHandler::Init(handlerVector[i]);
+            staticHand.StaticHandler::HandleRequest(req, &rep);
+            std::cout << "Returning file reply..." << "\n";
+          }
+          break;
         } 
       }
-      reqHand.request_handler::handle_request(req, rep);
+      //reqHand.request_handler::HandleRequest(req, rep);
 
 
 
@@ -57,13 +90,13 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
-      if (isEcho == false){
-        std::cout << "Returning file reply..." << "\n";
+      //if (isEcho == false){
+        //std::cout << "Returning file reply..." << "\n";
         boost::asio::write(*sock, rep.to_buffers());
-      } else {
-        std::cout << "Returning echo reply..." << "\n";
-        boost::asio::write(*sock, boost::asio::buffer(buffer_, length));
-      }
+      //} else {
+        //std::cout << "Returning echo reply..." << "\n";
+        //boost::asio::write(*sock, boost::asio::buffer(buffer_, length));
+      //}
       
       break;
     }
@@ -117,15 +150,20 @@ static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const Ng
   bool kl = false;
   std::string prev = "";
   bool inHandler = false;
-  bool brackets =false;
+  bool brackets = false;
+  std::map<std::string,std::string> mapToAdd;
   for (const auto& statement : config.statements_) {
     for (const std::string& token : statement->tokens_) {
       kl = (token == "handler");
       if (kl) {
         inHandler = true;
-        std::map<std::string,std::string>* mapToAdd;
+        //std::map<std::string,std::string>* mapToAdd;
+        mapToAdd["handler"] = "";
       }
       if (inHandler)  {
+        if (count == 1){
+          mapToAdd["handler"] = token; //sets handler type
+        }
         
         if (count == 2) {
           brackets = (token =="{");
@@ -136,6 +174,8 @@ static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const Ng
           handMaps.push_back(mapToAdd);
           count = 0;
           brackets = false;
+          inHandler = false;
+          mapToAdd.clear();
         }
           if (count == 4) {
           std::string prev = token;
@@ -154,14 +194,14 @@ static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const Ng
   }
   if (handMaps.size() == 0) {
   std::string s = "No valid handlers!";
-  return s;
+  //return NULL;
   }
   return handMaps;
 }
 
 
-}
-}
+//}
+//}
 
 int main(int argc, char* argv[])
 {
@@ -179,13 +219,14 @@ int main(int argc, char* argv[])
     if (!config_parser.Parse(argv[1], &config)) {
       return -1;
     }
-    int port_ = http::server::getPort(config);
-    std::vector <std::map<std::string,std::string>> handlerVector = http::server::ConfigToHandlers(config);
+    int port_ = getPort(config);
+    std::vector <std::map<std::string,std::string>> handlerVector = ConfigToHandlers(config);
 
     std::cout << "Server running on port: " << port_ << "\n";
-    std::cout << "Base Path for files: " << base_path << "\n";
+    std::cout << "Vector Element 0, Key Path: " << handlerVector[0]["path"] << "\n";
+    std::cout << "Vector Element 1, Key Directory: " << handlerVector[1]["directory"] << "\n";
     boost::asio::io_service io;
-    http::server::server(io, port_, handlerVector);
+    server(io, port_, handlerVector);
   }
   catch (std::exception& e)
   {

@@ -1,7 +1,8 @@
-#include "handlers.h"
+//include "request_parser.h"
+#include "request_handler.h"
 
-namespace http {
-namespace server {
+/*namespace http {
+namespace server {*/
 
 request_parser::request_parser()
   : state_(method_start)
@@ -200,7 +201,7 @@ boost::tribool request_parser::consume(HttpRequest& req, char input)
     }
     else
     {
-      std::pair <std::string. std::string> header;
+      std::pair <std::string, std::string> header;
       req.headers_.push_back(header);
       req.headers_.back().first.push_back(input);
       state_ = header_name;
@@ -313,5 +314,5 @@ bool request_parser::is_digit(int c)
 }
 
 
-} // namespace server
-} // namespace http
+//} // namespace server
+//} // namespace http

@@ -1,10 +1,23 @@
 #include <boost/logic/tribool.hpp>
 #include <boost/tuple/tuple.hpp>
+/*#include <vector>
+#include <utility>*/
 
-namespace http {
-namespace server {
+//#include "HttpRequest.h"
+typedef std::vector<std::pair<std::string, std::string>> Headers;
 
-struct HttpRequest;
+/*struct HttpRequest {
+std::string raw_request_;
+std::string method_;
+std::string uri_;
+std::string version_;
+Headers headers_;
+std::string body_;
+};*/
+
+//namespace http {
+//namespace server {
+
 
 /// Parser for incoming requests.
 class request_parser
@@ -77,5 +90,5 @@ private:
   } state_;
 };
 
-} // namespace server
-} // namespace http
+//} // namespace server
+//} // namespace http

@@ -11,8 +11,10 @@
 #include <thread>
 #include <utility>
 #include <string>
+#include <map>
 #include "request_parser.h"
 #include <fstream>
+//#include "request_handler.h"
 
 namespace http {
 namespace server {
@@ -86,5 +88,6 @@ void server(boost::asio::io_service& io_service, short port, std::string base_pa
 static std::string getBasePath(const NginxConfig &config);
 static int getPort(const NginxConfig &config);
 */
+//std::vector<boost::asio::const_buffer> HttpResponse::to_buffers();
 } // namespace server
 } // namespace http

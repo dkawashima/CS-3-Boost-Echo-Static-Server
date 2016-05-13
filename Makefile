@@ -14,7 +14,8 @@ echotest:
 	./build_tests.sh
 
 webserver:
-	$(CC) $(CFLAGS) -o webserver request.cc request_parser.cc response.cc reply.cc mime_types.cc config_parser.cc -lboost_system -lpthread
+	$(CC) $(CFLAGS) -o webserver request.cc request_parser.cc EchoHandler.cc mime_types.cc StaticHandler.cc config_parser.cc HttpResponse.cc -lboost_system -lpthread
+	#response.cc reply.cc mime_types.cc
 
 hello:
 	./build_server.sh
