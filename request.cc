@@ -156,7 +156,9 @@ void getChildBlock(std::vector <std::shared_ptr<NginxConfigStatement> > statemen
       }
       if (count == 1){
         map[prevToken] = token;
+
       }
+      count++;
     }
   }
   return;
@@ -179,6 +181,7 @@ static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const Ng
         inHandler = true;
         //std::map<std::string,std::string>* mapToAdd;
         //count++;
+        std::map<std::string,std::string> mapToAdd;
         mapToAdd["handler"] = "";
       }
       if (inHandler)  {
@@ -186,7 +189,7 @@ static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const Ng
           mapToAdd["handler"] = token; //sets handler type
           getChildBlock(statement->child_block_->statements_ ,mapToAdd);
           handMaps.push_back(mapToAdd);
-          mapToAdd.clear();
+          //mapToAdd.clear();
           count = 0;
           inHandler = false;
           } else {
