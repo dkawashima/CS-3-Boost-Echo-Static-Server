@@ -12,7 +12,8 @@ const char crlf[] = { '\r', '\n' };
 std::vector<boost::asio::const_buffer> HttpResponse::to_buffers()
 {
   std::vector<boost::asio::const_buffer> buffers;
-  buffers.push_back(boost::asio::buffer(reason_phrase_));
+  std::string status = "HTTP/" + http_version_ + " " + status_code_ + " " + reason_phrase_ + "\r\n";
+  buffers.push_back(boost::asio::buffer(status));
   for (std::size_t i = 0; i < headers_.size(); ++i)
   {
     std::pair<std::string, std::string> h = headers_[i];

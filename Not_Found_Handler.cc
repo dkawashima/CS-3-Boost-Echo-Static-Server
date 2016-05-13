@@ -29,11 +29,14 @@ bool Not_Found_Handler::HandleRequest(const HttpRequest& request, HttpResponse* 
 	response->status_code_ = "404";
     response->http_version_ = "1.0";
     response->reason_phrase_ = "Not Found";
-    response->body_ = "HTTP/1.0 404 Not Found\r\n";
-    response->headers_[0].first = "Content-Length";
-    response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
-    response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; 
+    response->body_ = "<html>\n"
+  "<head><title>Not Found</title></head>\n"
+  "<body><h1>404 Not Found</h1></body>\n"
+  "</html>\n";
+    std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
+    std::pair<std::string, std::string> pair1("Content-Type", "text/html");
+    response->headers_.push_back(pair);
+    response->headers_.push_back(pair1);
 
     //Always returns 404
     return 0;

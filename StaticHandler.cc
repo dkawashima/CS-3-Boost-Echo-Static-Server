@@ -35,11 +35,19 @@ bool StaticHandler::HandleRequest(const HttpRequest& request, HttpResponse* resp
     response->status_code_ = "404";
     response->http_version_ = "1.0";
     response->reason_phrase_ = "Not Found";
-    response->body_ = "HTTP/1.0 404 Not Found\r\n";
-    response->headers_[0].first = "Content-Length";
+    response->body_ = "<html>\n"
+  "<head><title>Not Found</title></head>\n"
+  "<body><h1>404 Not Found</h1></body>\n"
+  "</html>\n";
+  //"HTTP/1.0 404 Not Found\r\n";
+    std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
+    std::pair<std::string, std::string> pair1("Content-Type", "text/html");
+    response->headers_.push_back(pair);
+    response->headers_.push_back(pair1);
+    /*response->headers_[0].first = "Content-Length";
     response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
     response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; 
+    response->headers_[1].second = "text/html"; */
     
     //response = responsely::stock_responsely(responsely::not_found);
     return 0;
@@ -52,7 +60,11 @@ bool StaticHandler::HandleRequest(const HttpRequest& request, HttpResponse* resp
     response->status_code_ = "404";
     response->http_version_ = "1.0";
     response->reason_phrase_ = "Not Found";
-    response->body_ = "HTTP/1.0 404 Not Found\r\n";
+    response->body_ = "<html>\n"
+  "<head><title>Not Found</title></head>\n"
+  "<body><h1>404 Not Found</h1></body>\n"
+  "</html>\n";
+  //"HTTP/1.0 404 Not Found\r\n";
     response->headers_[0].first = "Content-Length";
     response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
     response->headers_[1].first = "Content-Type";
@@ -90,11 +102,19 @@ std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
     response->status_code_ = "404";
     response->http_version_ = "1.0";
     response->reason_phrase_ = "Not Found";
-    response->body_ = "HTTP/1.0 404 Not Found\r\n";
-    response->headers_[0].first = "Content-Length";
+    response->body_ = "<html>\n"
+  "<head><title>Not Found</title></head>\n"
+  "<body><h1>404 Not Found</h1></body>\n"
+  "</html>\n";
+    //"HTTP/1.0 404 Not Found\r\n";
+    std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
+    std::pair<std::string, std::string> pair1("Content-Type", "text/html");
+    response->headers_.push_back(pair);
+    response->headers_.push_back(pair1);
+    /*response->headers_[0].first = "Content-Length";
     response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
     response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; 
+    response->headers_[1].second = "text/html"; */
     //rep = reply::stock_reply(reply::not_found);
     return 0;
   }
@@ -109,11 +129,15 @@ std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
   while (is.read(buf, sizeof(buf)).gcount() > 0){
   	response->body_.append(buf, is.gcount());
   }
-  	response->headers_.resize(2);
-  	response->headers_[0].first = "Content-Length";
+  	//response->headers_.resize(2);
+    std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
+    std::pair<std::string, std::string> pair1("Content-Type", mime_types::extension_to_type(extension));
+    response->headers_.push_back(pair);
+    response->headers_.push_back(pair1);
+  	/*response->headers_[0].first = "Content-Length";
   	response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());
   	response->headers_[1].first = "Content-Type";
-  	response->headers_[1].second = mime_types::extension_to_type(extension);
+  	response->headers_[1].second = mime_types::extension_to_type(extension);*/
 
   	return 0;
 }
