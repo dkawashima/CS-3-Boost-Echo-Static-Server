@@ -23,7 +23,8 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
 {
   try
   {
-    
+    int i =0;
+    std::string uri_path;
     HttpRequest req;
     RequestHandler reqHand;
     HttpResponse rep;
@@ -31,6 +32,7 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
     request_parser rparser = request_parser();
     for (;;)
     {
+
       boost::array <char,8192> buffer_;
       boost::system::error_code error;
 
@@ -38,8 +40,15 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
       std::size_t length = sock->read_some(boost::asio::buffer(buffer_), error);
 
       std::cout << "Handling request..." << "\n";
- 
+
       rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
+      
+      for (i=0; i<handlerVector.size(); i++){
+        if (req.uri_.find(handlerVector[i]["path"]) != std::string::npos) {
+        int start_position_to_erase = req.uri_.find("/static");
+        req.uri_.erase(start_position_to_erase, handlerVector[i]["path"].size());
+        } 
+      }
       reqHand.request_handler::handle_request(req, rep);
 
 
@@ -66,7 +75,7 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
   }
 }
 
-void server(boost::asio::io_service& io_service, short port, std::string base_path)
+void server(boost::asio::io_service& io_service, short port, std::vector <std::map<std::string,std::string>> handlerVector)
 {
   tcp::acceptor a(io_service, tcp::endpoint(tcp::v4(), port));
   for (;;)
