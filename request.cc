@@ -143,55 +143,58 @@ static int getPort(const NginxConfig &config) { // Gets port from config_file
   return -1;
 }
 
+void getChildBlock(std::vector <std::shared_ptr<NginxConfigStatement> > statements, std::map<std::string,std::string> &map) { // Gets port from config_file
+  int count = 0;
+  std::string prevToken;
+  for (const auto& statement : statements) {
+    //bool kl = true;
+    for (const std::string& token : statement->tokens_) {
+      count = count % 2;
+      if (count == 0){
+        map[token] = "";
+        prevToken = token;
+      }
+      if (count == 1){
+        map[prevToken] = token;
+      }
+    }
+  }
+  return;
+}
+
 static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const NginxConfig &config) { // Gets base_path from config_file
   
   std::vector <std::map<std::string,std::string>> handMaps;
   int count = 0;
   bool kl = false;
-  std::string prev = "";
+  //std::string prev = "";
   bool inHandler = false;
-  bool brackets = false;
+  //bool brackets = false;
   std::map<std::string,std::string> mapToAdd;
   for (const auto& statement : config.statements_) {
     for (const std::string& token : statement->tokens_) {
       kl = (token == "handler");
-      if (kl) {
+      //count = count % 2;
+      if (kl && count == 0) {
         inHandler = true;
         //std::map<std::string,std::string>* mapToAdd;
+        //count++;
         mapToAdd["handler"] = "";
       }
       if (inHandler)  {
         if (count == 1){
           mapToAdd["handler"] = token; //sets handler type
-        }
-        
-        if (count == 2) {
-          brackets = (token =="{");
-        }
-        count++;
-        if (brackets) {
-          if (token == "}") {
+          getChildBlock(statement->child_block_->statements_ ,mapToAdd);
           handMaps.push_back(mapToAdd);
-          count = 0;
-          brackets = false;
-          inHandler = false;
           mapToAdd.clear();
-        }
-          if (count == 4) {
-          std::string prev = token;
-          mapToAdd[token] = "";
+          count = 0;
+          inHandler = false;
+          } else {
+            count++;
           }
-        }
-        if (count == 5) {
-          mapToAdd[prev] = token;
-        }
-        if (token == ";") {
-          count = 3;
-        }
-
       }
-    }
   }
+}
   if (handMaps.size() == 0) {
   std::string s = "No valid handlers!";
   std::cout << s << "\n";
@@ -221,6 +224,7 @@ int main(int argc, char* argv[])
     if (!config_parser.Parse(argv[1], &config)) {
       return -1;
     }
+
     int port_ = getPort(config);
     std::vector <std::map<std::string,std::string>> handlerVector = ConfigToHandlers(config);
 

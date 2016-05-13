@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -Wall -ansi -ggdb -std=c++0x
 GTEST_DIR = gtest-1.7.0
-all: webserver echoserver hello test
-# echoserver
+all: webserver echoserver hello 
+# echoserver test
 	
 echoserver:
 	$(CC) $(CFLAGS) -o echoserver echo_tcp_server.cc -lboost_system -lpthread
