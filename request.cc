@@ -19,13 +19,14 @@ typedef boost::shared_ptr<tcp::socket> socket_ptr;
 namespace http {
 namespace server {
 
-void session(socket_ptr sock, std::string base_path)
+void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> handlerVector)
 {
   try
   {
-    request_handler reqHand(base_path);
-    request req;
-    reply rep;
+    
+    HttpRequest req;
+    RequestHandler reqHand;
+    HttpResponse rep;
     bool isEcho = false;
     request_parser rparser = request_parser();
     for (;;)
@@ -39,7 +40,7 @@ void session(socket_ptr sock, std::string base_path)
       std::cout << "Handling request..." << "\n";
  
       rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
-      reqHand.request_handler::handle_request(req, rep, isEcho);
+      reqHand.request_handler::handle_request(req, rep);
 
 
 
@@ -77,7 +78,7 @@ void server(boost::asio::io_service& io_service, short port, std::string base_pa
     socket_ptr sock(new tcp::socket(io_service));
     a.accept(*sock);
     
-    std::thread t(session, std::move(sock), base_path);
+    std::thread t(session, std::move(sock), handlerVector);
     t.detach();
     //socket_ptr sock1 = std::move(sock);
     //session(std::move(sock));
@@ -99,26 +100,56 @@ static int getPort(const NginxConfig &config) { // Gets port from config_file
   }
   return -1;
 }
-/*
-static std::map getBasePath(const NginxConfig &config) { // Gets base_path from config_file
-  std::string pathfinder = "handler";
+
+static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const NginxConfig &config) { // Gets base_path from config_file
+  
+  std::vector <std::map<std::string,std::string>> handMaps;
   int count = 0;
   bool kl = false;
+  std::string prev = "";
+  bool inHandler = false;
+  bool brackets =false;
   for (const auto& statement : config.statements_) {
     for (const std::string& token : statement->tokens_) {
-      kl = (token.find(pathfinder) != std::string::npos);
+      kl = (token == "handler");
       if (kl) {
-        count++;
-        if (count = 3) {
-        try { return token; } catch (...) {}
+        inHandler = true;
+        std::map<std::string,std::string>* mapToAdd;
+      }
+      if (inHandler)  {
+        
+        if (count == 2) {
+          brackets = (token =="{");
         }
+        count++;
+        if (brackets) {
+          if (token == "}") {
+          handMaps.push_back(mapToAdd);
+          count = 0;
+          brackets = false;
+        }
+          if (count == 4) {
+          std::string prev = token;
+          mapToAdd[token] = "";
+          }
+        }
+        if (count == 5) {
+          mapToAdd[prev] = token;
+        }
+        if (token == ";") {
+          count = 3;
+        }
+
       }
     }
   }
-  std::string s = "No valid path!";
+  if (handMaps.size() == 0) {
+  std::string s = "No valid handlers!";
   return s;
+  }
+  return handMaps;
 }
-*/
+
 
 }
 }
@@ -140,12 +171,12 @@ int main(int argc, char* argv[])
       return -1;
     }
     int port_ = http::server::getPort(config);
-    std::string base_path = http::server::getBasePath(config);
+    std::vector <std::map<std::string,std::string>> handlerVector = http::server::ConfigToHandlers(config);
 
     std::cout << "Server running on port: " << port_ << "\n";
     std::cout << "Base Path for files: " << base_path << "\n";
     boost::asio::io_service io;
-    http::server::server(io, port_, base_path);
+    http::server::server(io, port_, handlerVector);
   }
   catch (std::exception& e)
   {

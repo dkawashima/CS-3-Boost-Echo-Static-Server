@@ -112,8 +112,8 @@ boost::tribool request_parser::consume(HttpRequest& req, char input)
   case http_version_slash:
     if (input == '/')
     {
-      req.http_version_major = 0;
-      req.http_version_minor = 0;
+      //req.http_version_major = 0;
+      //req.http_version_minor = 0;
       state_ = http_version_major_start;
       return boost::indeterminate;
     }
@@ -124,7 +124,7 @@ boost::tribool request_parser::consume(HttpRequest& req, char input)
   case http_version_major_start:
     if (is_digit(input))
     {
-      req.http_version_major = req.http_version_major * 10 + input - '0';
+      //req.http_version_major = req.http_version_major * 10 + input - '0';
       state_ = http_version_major;
       return boost::indeterminate;
     }
@@ -140,7 +140,7 @@ boost::tribool request_parser::consume(HttpRequest& req, char input)
     }
     else if (is_digit(input))
     {
-      req.http_version_major = req.http_version_major * 10 + input - '0';
+      //req.http_version_major = req.http_version_major * 10 + input - '0';
       return boost::indeterminate;
     }
     else
@@ -150,7 +150,7 @@ boost::tribool request_parser::consume(HttpRequest& req, char input)
   case http_version_minor_start:
     if (is_digit(input))
     {
-      req.http_version_minor = req.http_version_minor * 10 + input - '0';
+      //req.http_version_minor = req.http_version_minor * 10 + input - '0';
       state_ = http_version_minor;
       return boost::indeterminate;
     }
@@ -166,7 +166,7 @@ boost::tribool request_parser::consume(HttpRequest& req, char input)
     }
     else if (is_digit(input))
     {
-      req.http_version_minor = req.http_version_minor * 10 + input - '0';
+      //req.http_version_minor = req.http_version_minor * 10 + input - '0';
       return boost::indeterminate;
     }
     else
