@@ -194,8 +194,10 @@ static std::vector <std::map<std::string,std::string>> ConfigToHandlers(const Ng
   }
   if (handMaps.size() == 0) {
   std::string s = "No valid handlers!";
+  std::cout << s << "\n";
   //return NULL;
   }
+  std::cout << "There are " << handMaps.size() << " valid handlers." << "\n";
   return handMaps;
 }
 
