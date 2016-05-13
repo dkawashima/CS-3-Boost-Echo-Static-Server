@@ -1,7 +1,7 @@
 #include "request_handler.h"
 
-namespace http {
-namespace server {
+/*namespace http {
+namespace server {*/
 namespace mime_types {
 
 struct mapping
@@ -32,5 +32,5 @@ std::string extension_to_type(const std::string& extension)
 }
 
 } // namespace mime_types
-} // namespace server
-} // namespace http
+//} // namespace server
+//} // namespace http

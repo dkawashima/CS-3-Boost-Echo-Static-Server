@@ -1,12 +1,12 @@
 //include "echo_handler.h"
 #include "request_handler.h"
 
-namespace http {
-namespace server {
+//namespace http {
+//namespace server {
 //namespace EchoHandler {
-class Not_Found_Handler : public RequestHandler {
+//class Not_Found_Handler : public RequestHandler {
 
-bool Init(const std::map<std::string, std::string>& config_map) {
+bool Not_Found_Handler::Init(const std::map<std::string, std::string>& config_map) {
 return 0;
 //Does Nothing if 404.
 };
@@ -24,7 +24,7 @@ return 0;
 // handler will be called for all requests whose URI paths start with "/echo".
 //
 // The dispatch mechanism is implemented in the main server code.
-bool HandleRequest(const HttpRequest& request, HttpResponse* response){
+bool Not_Found_Handler::HandleRequest(const HttpRequest& request, HttpResponse* response){
 	
 	response->status_code_ = "404";
     response->http_version_ = "1.0";
@@ -39,6 +39,6 @@ bool HandleRequest(const HttpRequest& request, HttpResponse* response){
     return 0;
 };
 //};
-};
+/*};
 }
-}
+}*/

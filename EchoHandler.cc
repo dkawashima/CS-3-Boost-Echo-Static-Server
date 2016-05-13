@@ -4,9 +4,9 @@
 //namespace http {
 //namespace server {
 //namespace EchoHandler {
-class EchoHandler : public RequestHandler {
+//class EchoHandler : public RequestHandler {
 
-bool Init(const std::map<std::string, std::string>& config_map) {
+bool EchoHandler::Init(const std::map<std::string, std::string>& config_map) {
 return 0;
 //Does Nothing if echo.
 };
@@ -24,7 +24,7 @@ return 0;
 // handler will be called for all requests whose URI paths start with "/echo".
 //
 // The dispatch mechanism is implemented in the main server code.
-bool HandleRequest(const HttpRequest& request, HttpResponse* response){
+bool EchoHandler::HandleRequest(const HttpRequest& request, HttpResponse* response){
 	
 	response->status_code_ = "200";
     response->http_version_ = request.version_;
@@ -37,6 +37,6 @@ bool HandleRequest(const HttpRequest& request, HttpResponse* response){
     return 0;
 };
 //};
-};
+//};
 //}
 //}

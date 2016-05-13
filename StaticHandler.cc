@@ -5,11 +5,11 @@
 //namespace server {
 //namespace StaticHandler {
 	
-class StaticHandler : public RequestHandler {
+//class StaticHandler : public RequestHandler {
 
 std::string directory;
 
-bool Init(const std::map<std::string, std::string>& config_map){
+bool StaticHandler::Init(const std::map<std::string, std::string>& config_map){
 	directory = config_map.at("directory");
 	return 0;
 }
@@ -23,11 +23,11 @@ bool Init(const std::map<std::string, std::string>& config_map){
 // Each config block has a special config named "path" that determines
 // the path prefix for which the handler will be called.
 //
-// For example, the config "handler echo { path /echo; }" means that an echo
-// handler will be called for all requests whose URI paths start with "/echo".
+// For example, the config "handler Static { path /Static; }" means that an Static
+// handler will be called for all requests whose URI paths start with "/Static".
 //
 // The dispatch mechanism is implemented in the main server code.
-bool HandleRequest(const HttpRequest& request, HttpResponse* response){
+bool StaticHandler::HandleRequest(const HttpRequest& request, HttpResponse* response){
   // Decode url to path.
   std::string request_path;
   if (!url_decode(request.uri_, request_path))
@@ -75,8 +75,8 @@ bool HandleRequest(const HttpRequest& request, HttpResponse* response){
   // Open the file to send back.
   std::string full_path = directory + request_path;
   
-  /*if (full_path.find("/echo") != std::string::npos){
-    isEcho = true;
+  /*if (full_path.find("/Static") != std::string::npos){
+    isStatic = true;
     //rep = reply::stock_reply(reply::not_found); // Not returned
     return;
   } else if (full_path.find("/static") != std::string::npos && full_path.find("/static1") == std::string::npos){
@@ -118,7 +118,7 @@ std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
   	return 0;
 }
 
-bool url_decode(const std::string& in, std::string& out)
+bool StaticHandler::url_decode(const std::string& in, std::string& out)
 {
   out.clear();
   out.reserve(in.size());
@@ -171,6 +171,6 @@ bool url_decode(const std::string& in, std::string& out)
 
   return "text/plain";
 } */
-};
+//};
  //}// namespace server
  //}// namespace http
