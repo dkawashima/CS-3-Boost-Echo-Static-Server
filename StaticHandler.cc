@@ -1,11 +1,4 @@
-//#include "static_handler.h"
 #include "request_handler.h"
-
-//namespace http {
-//namespace server {
-//namespace StaticHandler {
-	
-//class StaticHandler : public RequestHandler {
 
 std::string directory;
 
@@ -39,17 +32,11 @@ bool StaticHandler::HandleRequest(const HttpRequest& request, HttpResponse* resp
   "<head><title>Not Found</title></head>\n"
   "<body><h1>404 Not Found</h1></body>\n"
   "</html>\n";
-  //"HTTP/1.0 404 Not Found\r\n";
+  // Set Content Type and Length in headers
     std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
     std::pair<std::string, std::string> pair1("Content-Type", "text/html");
     response->headers_.push_back(pair);
     response->headers_.push_back(pair1);
-    /*response->headers_[0].first = "Content-Length";
-    response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
-    response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; */
-    
-    //response = responsely::stock_responsely(responsely::not_found);
     return 0;
   }
 
@@ -64,13 +51,12 @@ bool StaticHandler::HandleRequest(const HttpRequest& request, HttpResponse* resp
   "<head><title>Not Found</title></head>\n"
   "<body><h1>404 Not Found</h1></body>\n"
   "</html>\n";
-  //"HTTP/1.0 404 Not Found\r\n";
-    response->headers_[0].first = "Content-Length";
-    response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
-    response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; 
+  // Set Content Type and Length in headers
+    std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
+    std::pair<std::string, std::string> pair1("Content-Type", "text/html");
+    response->headers_.push_back(pair);
+    response->headers_.push_back(pair1); 
 
-    //rep = reply::stock_reply(reply::not_found);
     return 0;
   }
 
@@ -87,14 +73,6 @@ bool StaticHandler::HandleRequest(const HttpRequest& request, HttpResponse* resp
   // Open the file to send back.
   std::string full_path = directory + request_path;
   
-  /*if (full_path.find("/Static") != std::string::npos){
-    isStatic = true;
-    //rep = reply::stock_reply(reply::not_found); // Not returned
-    return;
-  } else if (full_path.find("/static") != std::string::npos && full_path.find("/static1") == std::string::npos){
-    int start_position_to_erase = full_path.find("/static");
-    full_path.erase(start_position_to_erase, 7);
-  }*/
 std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 
   if (!is)
@@ -106,16 +84,11 @@ std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
   "<head><title>Not Found</title></head>\n"
   "<body><h1>404 Not Found</h1></body>\n"
   "</html>\n";
-    //"HTTP/1.0 404 Not Found\r\n";
+    // Set Content Type and Length in headers
     std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
     std::pair<std::string, std::string> pair1("Content-Type", "text/html");
     response->headers_.push_back(pair);
     response->headers_.push_back(pair1);
-    /*response->headers_[0].first = "Content-Length";
-    response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
-    response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; */
-    //rep = reply::stock_reply(reply::not_found);
     return 0;
   }
 
@@ -129,19 +102,16 @@ std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
   while (is.read(buf, sizeof(buf)).gcount() > 0){
   	response->body_.append(buf, is.gcount());
   }
-  	//response->headers_.resize(2);
+  	// Set Content Type and Length in headers
     std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
     std::pair<std::string, std::string> pair1("Content-Type", mime_types::extension_to_type(extension));
     response->headers_.push_back(pair);
     response->headers_.push_back(pair1);
-  	/*response->headers_[0].first = "Content-Length";
-  	response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());
-  	response->headers_[1].first = "Content-Type";
-  	response->headers_[1].second = mime_types::extension_to_type(extension);*/
 
   	return 0;
 }
 
+// Gets request path from url
 bool StaticHandler::url_decode(const std::string& in, std::string& out)
 {
   out.clear();
@@ -180,21 +150,3 @@ bool StaticHandler::url_decode(const std::string& in, std::string& out)
   }
   return true;
 };
-
-//};
-
-/*std::string extension_to_type(const std::string& extension)
-{
-  for (mapping* m = mappings; m->extension; ++m)
-  {
-    if (m->extension == extension)
-    {
-      return m->mime_type;
-    }
-  }
-
-  return "text/plain";
-} */
-//};
- //}// namespace server
- //}// namespace http

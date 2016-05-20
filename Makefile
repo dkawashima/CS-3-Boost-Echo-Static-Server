@@ -1,13 +1,12 @@
 CC = g++
 CFLAGS = -Wall -ansi -ggdb -std=c++0x
 GTEST_DIR = gtest-1.7.0
-#use stacic linking
+#use static linking
 
 
 
 
 all: webserver echoserver hello 
-# echoserver test
 	
 echoserver:
 	$(CC) $(CFLAGS) -o echoserver echo_tcp_server.cc -lboost_system -lpthread
@@ -19,8 +18,7 @@ echotest:
 	./build_tests.sh
 
 webserver:
-	$(CC) $(CFLAGS) -o webserver request.cc request_parser.cc EchoHandler.cc mime_types.cc StaticHandler.cc config_parser.cc HttpResponse.cc -static-libgcc -static-libstdc++ -pthread -Wl,-Bstatic -lboost_log_setup -lboost_log -lboost_thread -lboost_system
-	#response.cc reply.cc mime_types.cc
+	$(CC) $(CFLAGS) -o webserver request.cc request_parser.cc EchoHandler.cc mime_types.cc StaticHandler.cc Not_Found_Handler.cc config_parser.cc HttpResponse.cc -static-libgcc -static-libstdc++ -pthread -Wl,-Bstatic -lboost_thread -lboost_system
 
 hello:
 	./build_server.sh

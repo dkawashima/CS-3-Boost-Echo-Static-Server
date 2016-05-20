@@ -1,10 +1,5 @@
-//include "echo_handler.h"
-#include "request_handler.h"
 
-//namespace http {
-//namespace server {
-//namespace EchoHandler {
-//class Not_Found_Handler : public RequestHandler {
+#include "request_handler.h"
 
 bool Not_Found_Handler::Init(const std::map<std::string, std::string>& config_map) {
 return 0;
@@ -41,7 +36,3 @@ bool Not_Found_Handler::HandleRequest(const HttpRequest& request, HttpResponse* 
     //Always returns 404
     return 0;
 };
-//};
-/*};
-}
-}*/

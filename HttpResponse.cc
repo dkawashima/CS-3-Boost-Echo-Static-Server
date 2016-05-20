@@ -1,5 +1,4 @@
 #include "request_handler.h"
-//#include "handlers.h"
 
 
 namespace misc_strings {
@@ -8,7 +7,7 @@ const char name_value_separator[] = { ':', ' ' };
 const char crlf[] = { '\r', '\n' };
 
 }
-
+// Converts response object to valid buffer for return
 std::vector<boost::asio::const_buffer> HttpResponse::to_buffers()
 {
   std::vector<boost::asio::const_buffer> buffers;
