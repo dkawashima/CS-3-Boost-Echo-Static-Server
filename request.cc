@@ -43,7 +43,7 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
       std::cout << "Handling request..." << "\n";
       // Parse request
       rparser.request_parser::parse(req, buffer_.data(), buffer_.data() + length);
-      std::string raw_req(buffer_.begin(), buffer_.end());
+      std::string raw_req(buffer_.begin(), buffer_.begin() + length);
       req.raw_request_ = raw_req;
       int start_position_to_erase = -1;
       // Match config file to URI (config file has 3 keys)
