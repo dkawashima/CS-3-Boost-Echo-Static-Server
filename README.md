@@ -14,7 +14,7 @@ Build : `make`
 
 Run tests: `make test`
 
-Run server: `./wbser config`
+Run server: `./webserver config`
 
 ### With docker 
 Build: "docker build -t webserver ."
