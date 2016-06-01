@@ -10,8 +10,3 @@ handler static {
 path /more_static;
 directory /home/user/2coolforschool;
 }
-handler proxy {
-path /proxy;
-proxy www.caltech.edu;
-port 80;
-}
