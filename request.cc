@@ -1,16 +1,7 @@
-//
-// blocking_tcp_echo_server.cpp
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2012 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
+// this our main file for building the webserver and handling requests
 
 #include "request_handler.h"
-//#include "echo_handler.h"
-//#include "static_handler.h"
+
 
 using boost::asio::ip::tcp;
 
