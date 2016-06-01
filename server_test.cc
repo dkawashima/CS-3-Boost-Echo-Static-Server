@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "handlers.h"
+//#include "request_handler.h"
 //#include "echo_tcp_server.cc"
 static int getPort(const NginxConfig &config) { // Gets port from config_file
   for (const auto& statement : config.statements_) {
@@ -128,7 +129,7 @@ TEST(NginxServerTest, GetBasePath) {
   // Makes sure getBasePath function is working correctly
   EXPECT_TRUE(success) << "getBasePath function is not working correctly";
 }
-
+/*
 TEST(NginxServerTest, ReadFileExtensionJPG){ // Checks if parsing file extension correctly for .jpg
   bool success;
   std::string request_path = "/static/kobe.jpg";
@@ -166,6 +167,7 @@ TEST(NginxServerTest, ReadFileExtensionPNG){ // Checks if parsing file extension
   EXPECT_TRUE(success) << "getFileExtension procedures are not working correctly";
 }
 
+
 TEST(NginxServerTest, BadFileCall){ //Tests invalid files
   http::server::request req;
   http::server::reply rep;
@@ -201,3 +203,4 @@ TEST(NginxServerTest, CorrectEchoUsage){ //Tests echo functionality
   }
   EXPECT_TRUE(success) << "Does not recognize echo server";
 }
+*/

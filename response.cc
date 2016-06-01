@@ -7,12 +7,13 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-#include "request_handlers.h"
+
+#include "handlers.h"
 
 namespace http {
 namespace server {
 
-
+/*
 //TODO
 virtual bool request_handler::init(const std::map<std::string, std::string>& config_map){
     return 0;
@@ -147,6 +148,6 @@ bool request_handler::url_decode(const std::string& in, std::string& out)
   }
   return true;
 }
-
+*/
 } // namespace server
 } // namespace http
