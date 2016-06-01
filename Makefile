@@ -6,7 +6,7 @@ GTEST_DIR = gtest-1.7.0
 
 
 
-all: webserver echoserver hello 
+all: webserver echoserver hello
 	
 echoserver:
 	$(CC) $(CFLAGS) -o echoserver echo_tcp_server.cc -lboost_system -lpthread
@@ -18,10 +18,10 @@ echotest:
 	./build_tests.sh
 
 webserver:
-	$(CC) $(CFLAGS) -o webserver request.cc request_parser.cc EchoHandler.cc mime_types.cc StaticHandler.cc Not_Found_Handler.cc config_parser.cc HttpResponse.cc -static-libgcc -static-libstdc++ -pthread -Wl,-Bstatic -lboost_thread -lboost_system
+	$(CC) $(CFLAGS) -o webserver request.cc request_parser.cc ProxyHandler.cc EchoHandler.cc mime_types.cc StaticHandler.cc Not_Found_Handler.cc config_parser.cc HttpResponse.cc -static-libgcc -static-libstdc++ -pthread -Wl,-Bstatic -lboost_thread -lboost_system
 
 hello:
-	./build_server.sh
+ 	./build_server.sh
 
 test: 
 	g++ -std=c++0x -isystem ${GTEST_DIR}/include -I${GTEST_DIR} -pthread -c ${GTEST_DIR}/src/gtest-all.cc
