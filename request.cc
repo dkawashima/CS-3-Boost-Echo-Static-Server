@@ -8,6 +8,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
+#include <vector>
 #include "request_handler.h"
 //#include "echo_handler.h"
 //#include "static_handler.h"
@@ -29,6 +30,7 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
     EchoHandler echoHand;
     StaticHandler staticHand;
     Not_Found_Handler notHand;
+    ProxyHandler proxyHand;
     HttpResponse rep;
     request_parser rparser = request_parser();
     for (;;)
@@ -58,7 +60,15 @@ void session(socket_ptr sock, std::vector <std::map<std::string,std::string>> ha
             echoHand.EchoHandler::Init(handlerVector[i]);
             echoHand.EchoHandler::HandleRequest(req, &rep);
             std::cout << "Returning echo reply..." << "\n";
-          } else { // If config file handler type is static
+          } 
+          // If config file handler type is proxy
+          else if (handlerVector[i]["handler"] == "proxy") {
+            handlerVector[i].erase("handler");
+            proxyHand.ProxyHandler::Init(handlerVector[i]);
+            proxyHand.ProxyHandler::HandleRequest(req, &rep);
+            std::cout << "Returning proxy reply..." << "\n";
+          }
+          else { // If config file handler type is static
             handlerVector[i].erase("handler");
             staticHand.StaticHandler::Init(handlerVector[i]);
             staticHand.StaticHandler::HandleRequest(req, &rep);
@@ -198,6 +208,8 @@ int main(int argc, char* argv[])
 
     std::cout << "Server running on port: " << port_ << "\n";
     // Test ConfigToHandler function
+    /*std::cout << "Vector Element 0, Key Path: " << handlerVector[0]["path"] << "\n";
+    std::cout << "Vector Element 1, Key Directory: " << handlerVector[1]["directory"] << "\n"; */
     boost::asio::io_service io;
     server(io, port_, handlerVector);
   }

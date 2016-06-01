@@ -96,6 +96,18 @@ bool HandleRequest(const HttpRequest& request, HttpResponse* response);
 bool url_decode(const std::string& in, std::string& out);
 };
 
+class ProxyHandler : public RequestHandler {
+public:
+
+std::string proxy;
+
+bool Init(const std::map<std::string, std::string>& config_map);
+
+bool HandleRequest(const HttpRequest& request, HttpResponse* response);
+
+bool Replace(std::string& str, const std::string& from, const std::string& to);
+};
+
 class Not_Found_Handler : public RequestHandler { 
 public:
 
