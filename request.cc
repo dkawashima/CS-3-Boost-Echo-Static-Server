@@ -208,8 +208,6 @@ int main(int argc, char* argv[])
 
     std::cout << "Server running on port: " << port_ << "\n";
     // Test ConfigToHandler function
-    /*std::cout << "Vector Element 0, Key Path: " << handlerVector[0]["path"] << "\n";
-    std::cout << "Vector Element 1, Key Directory: " << handlerVector[1]["directory"] << "\n"; */
     boost::asio::io_service io;
     server(io, port_, handlerVector);
   }
