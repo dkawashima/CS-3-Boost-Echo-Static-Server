@@ -25,11 +25,7 @@ bool EchoHandler::HandleRequest(const HttpRequest& request, HttpResponse* respon
     response->http_version_ = "1.0";
     response->reason_phrase_ = "OK";
     response->body_ = request.raw_request_;
-    std::cout << "Raw Request: " << "\n" << request.raw_request_ << "\n";//"HTTP/1.0 404 Not Found\r\n";
-    /*response->headers_[0].first = "Content-Length";
-    response->headers_[0].second = boost::lexical_cast<std::string>(response->body_.size());; 
-    response->headers_[1].first = "Content-Type";
-    response->headers_[1].second = "text/html"; */
+    
     std::pair<std::string, std::string> pair("Content-Length", boost::lexical_cast<std::string>(response->body_.size()));
     std::pair<std::string, std::string> pair1("Content-Type", "text/plain");
     response->headers_.push_back(pair);
