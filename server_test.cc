@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "handlers.h"
-//#include "request_handler.h"
+//#include "handlers.h"
+#include "request_handler.h"
 //#include "echo_tcp_server.cc"
 static int getPort(const NginxConfig &config) { // Gets port from config_file
   for (const auto& statement : config.statements_) {
@@ -129,7 +129,7 @@ TEST(NginxServerTest, GetBasePath) {
   // Makes sure getBasePath function is working correctly
   EXPECT_TRUE(success) << "getBasePath function is not working correctly";
 }
-/*
+
 TEST(NginxServerTest, ReadFileExtensionJPG){ // Checks if parsing file extension correctly for .jpg
   bool success;
   std::string request_path = "/static/kobe.jpg";
@@ -140,7 +140,7 @@ TEST(NginxServerTest, ReadFileExtensionJPG){ // Checks if parsing file extension
   {
     extension = request_path.substr(last_dot_pos + 1);
   }
-  std::string exp_header = http::server::mime_types::extension_to_type(extension);
+  std::string exp_header = mime_types::extension_to_type(extension);
   if (exp_header == "image/jpeg"){
     success = true;
   } else {
@@ -148,6 +148,7 @@ TEST(NginxServerTest, ReadFileExtensionJPG){ // Checks if parsing file extension
   }
   EXPECT_TRUE(success) << "getFileExtension procedures are not working correctly";
 }
+
 TEST(NginxServerTest, ReadFileExtensionPNG){ // Checks if parsing file extension correctly for .png
   bool success;
   std::string request_path = "/static1/jenkins.png";
@@ -158,7 +159,7 @@ TEST(NginxServerTest, ReadFileExtensionPNG){ // Checks if parsing file extension
   {
     extension = request_path.substr(last_dot_pos + 1);
   }
-  std::string exp_header = http::server::mime_types::extension_to_type(extension);
+  std::string exp_header = mime_types::extension_to_type(extension);
   if (exp_header == "image/png"){
     success = true;
   } else {
@@ -168,17 +169,22 @@ TEST(NginxServerTest, ReadFileExtensionPNG){ // Checks if parsing file extension
 }
 
 
-TEST(NginxServerTest, BadFileCall){ //Tests invalid files
-  http::server::request req;
-  http::server::reply rep;
-  bool isEcho = false;
+TEST(NginxServerTest, BadStaticCall){ //Tests invalid files
+  //ttp::server::request req;
+  //http::server::reply rep;
+  //bool isEcho = false;
+  HttpResponse rep;
+  HttpRequest req = {};
   bool success;
-  req.uri = "/static/notkobe.jpg";
+  req.uri_ = "/static/notkobe.jpg";
   std::string base_path = "/home/user/2coolforschool";
-  http::server::request_handler reqHand(base_path);
-  reqHand.http::server::request_handler::handle_request(req, rep, isEcho);
+  StaticHandler staticHand;
+  std::map<std::string, std::string> handlerMap;
+  handlerMap["directory"] = base_path;
+  staticHand.StaticHandler::Init(handlerMap);
+  staticHand.StaticHandler::HandleRequest(req, &rep);
 
-  if (rep.status == http::server::reply::not_found){
+  if (rep.status_code_ == "404"){
     success = true;
   } else {
     success = false;
@@ -187,20 +193,21 @@ TEST(NginxServerTest, BadFileCall){ //Tests invalid files
 }
 
 TEST(NginxServerTest, CorrectEchoUsage){ //Tests echo functionality
-  http::server::request req;
-  http::server::reply rep;
-  bool isEcho = false;
+  HttpResponse rep;
+  HttpRequest req = {};
   bool success;
-  req.uri = "/echo/notkobe.jpg";
+  req.uri_ = "/echo/notkobe.jpg";
   std::string base_path = "/home/user/2coolforschool";
-  http::server::request_handler reqHand(base_path);
-  reqHand.http::server::request_handler::handle_request(req, rep, isEcho);
+  EchoHandler echoHand;
+  std::map<std::string, std::string> handlerMap;
+  handlerMap["directory"] = base_path;
+  echoHand.EchoHandler::Init(handlerMap);
+  echoHand.EchoHandler::HandleRequest(req, &rep);
 
-  if (isEcho == true){
+  if (rep.headers_[1].second == "text/plain"){
     success = true;
   } else {
     success = false;
   }
   EXPECT_TRUE(success) << "Does not recognize echo server";
 }
-*/
