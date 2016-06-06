@@ -1,5 +1,7 @@
 # 2CoolForSchool
 
+### David Kawashima and Christopher Haack: CS 3 Boost Echo/Static Server. Spring 2016
+
 ## Where things are
 - HttpRequest and HttpResponse structures in request.h/.cc and response.h/.cc
   - Helpful http constants in http_constants.h
